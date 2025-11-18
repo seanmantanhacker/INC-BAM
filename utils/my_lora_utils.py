@@ -6,6 +6,7 @@ import lzma
 import pywt
 import lz4.frame
 from numpy.linalg import svd
+import torch
 
 sample_rate = 1e6   # 1 MHz
 bw = 125e3          # LoRa Bandwidth (125 kHz)
@@ -39,7 +40,6 @@ up_chirp_signal = np.exp(1j * 2 * np.pi * (f0 * t + (f1 / ( symbol_time)) * t**2
 
 # Generate Downchirp signal (Linear Frequency Modulation)
 down_chirp_signal = np.conj(up_chirp_signal)
-
 
 def colortext(text,ncolor = 92):
     tetx = str(text)
@@ -852,8 +852,8 @@ def create_spectrogram_npy(x_ds,fs_ds,snr,symbol,no,folder=None):
     return Sxx_crop,Sxx_dB.min(),Sxx_dB.max()
 
 def create_spectrogram_npy_dual(x_ds,fs_ds,snr,symbol,no,folder_r=None,folder_i=None):
-    nperseg = 128 #128
-    noverlap = 64 # 64
+    nperseg = 256 #128
+    noverlap = 128 # 64
     nfft = 512 #512
     window = "hann"
     f_new, t_new, Zxx = stft(
@@ -862,10 +862,13 @@ def create_spectrogram_npy_dual(x_ds,fs_ds,snr,symbol,no,folder_r=None,folder_i=
         return_onesided=False
     )
 
-    
+    print(Zxx.shape)
     ###### USE DB, and normalize
-    f = np.fft.fftshift(f_new)
-    Zxx_shift = np.fft.fftshift(Zxx, axes=0)
+    # f = np.fft.fftshift(f_new)
+    # Zxx_shift = np.fft.fftshift(Zxx, axes=0)
+    
+    f = f_new
+    Zxx_shift = Zxx
     # Sxx_dB = 10 * np.log10(Sxx + 1e-12)
     # Normalize to 0–1 range
     # Sxx_norm_0_to_1 = (Zxx_shift - Zxx_shift.min()) / (Zxx_shift.max() - Zxx_shift.min())
@@ -873,21 +876,45 @@ def create_spectrogram_npy_dual(x_ds,fs_ds,snr,symbol,no,folder_r=None,folder_i=
     # Zxx_r = np.abs(Zxx_r)
     Zxx_i = np.imag(Zxx_shift)
     # Zxx_i = np.abs(Zxx_i)
-    Zxx_r_norm_0_to_1 = (Zxx_r - Zxx_r.min()) / (Zxx_r.max() - Zxx_r.min())
-    Zxx_i_norm_0_to_1 = (Zxx_i - Zxx_i.min()) / (Zxx_i.max() - Zxx_i.min())
+    # Zxx_r_norm_0_to_1 = (Zxx_r - Zxx_r.min()) / (Zxx_r.max() - Zxx_r.min())
+    # Zxx_i_norm_0_to_1 = (Zxx_i - Zxx_i.min()) / (Zxx_i.max() - Zxx_i.min())
     # Sxx_norm_0_to_1 = (Zxx_shift - Zxx_shift.min()) / (Zxx_shift.max() - Zxx_shift.min())
     # Zxx_r_norm = 2 * (Zxx_r - Zxx_r.min()) / (Zxx_r.max() - Zxx_r.min()) - 1
     # Zxx_i_norm = 2 * (Zxx_i - Zxx_i.min()) / (Zxx_i.max() - Zxx_i.min()) - 1
     # ---- CROP to ±BW/2 ----
-    mask = (f >= -bw/2) & (f < bw/2)
-    Zxx_r_crop = Zxx_r_norm_0_to_1[mask, :]
-    Zxx_i_crop = Zxx_i_norm_0_to_1[mask, :]
-    
+    # mask = (f >= -bw/2) & (f < bw/2)
+    # Zxx_r_crop = Zxx_r_norm_0_to_1[mask, :]
+    # Zxx_i_crop = Zxx_i_norm_0_to_1[mask, :]
+    Zxx_r_crop = Zxx_r
+    Zxx_i_crop = Zxx_i
     if (folder_r is not None) and (folder_i is not None):
         np.save(f'{folder_r}/s_sf9_bw125_{snr}_{symbol}_{no}.npy', Zxx_r_crop)
         np.save(f'{folder_i}/s_sf9_bw125_{snr}_{symbol}_{no}.npy', Zxx_i_crop)
     return Zxx_r_crop,Zxx_i_crop,Zxx_r.min(),Zxx_r.max(),Zxx_i.min(),Zxx_i.max()
 
+def create_spectrogram_from_torch(x):
+    nperseg = 256 #128
+    noverlap = 128 # 64
+    nfft = 512 #512
+    window = torch.hann_window(nperseg)
+    if isinstance(x, np.ndarray):
+        x = torch.from_numpy(x)
+
+    # Ensure dtype is float32
+
+    Z = torch.stft(
+        x, 
+        n_fft=nfft,
+        hop_length=noverlap,
+        win_length=nperseg,
+        window=window,
+        return_complex=True,       # this makes output shape (..., 2)
+        center=True,
+        onesided=False,
+        pad_mode="reflect"
+    )
+
+    return Z
 def calculate_symbol_alliqfile_without_down_sampling(data,sf,bw,sample_rate,show=True):
     plt.figure(figsize=(20,25))
     symbol_time = 2**sf / bw  # Symbol duration
