@@ -894,15 +894,15 @@ def create_spectrogram_npy_dual(x_ds,fs_ds,snr,symbol,no,folder_r=None,folder_i=
     return Zxx_r_crop,Zxx_i_crop,Zxx_r.min(),Zxx_r.max(),Zxx_i.min(),Zxx_i.max()
 
 def create_spectrogram_from_torch(x,sf,snr,symbol,no,folder_r=None):
-    nperseg = 2**sf // 8 #64
-    noverlap = 2**sf // 16# 64
-    nfft = (2**sf *2)#512
+    nperseg = 2**sf  #64
+    noverlap = 2**sf //2# 64
+    nfft = (2**sf *4)#512
     window = torch.hann_window(nperseg)
     if isinstance(x, np.ndarray):
         x = torch.from_numpy(x)
 
     # Ensure dtype is float32
-
+    
     Z = torch.stft(
         x, 
         n_fft=nfft,
@@ -914,10 +914,10 @@ def create_spectrogram_from_torch(x,sf,snr,symbol,no,folder_r=None):
         onesided=False,
         pad_mode="constant"
     )
-
+    print(Z.shape)
     Z_torch = Z.unsqueeze(0)  # adds batch dim
     ##crop
-    out = spec_to_network_input(Z_torch,(2**sf))
+    out = spec_to_network_input(Z_torch,(2**sf//2))
     real_part = out[0][0]
     ima_part = out[0][1]
     magnitude = torch.abs(real_part + ima_part * 1j)
