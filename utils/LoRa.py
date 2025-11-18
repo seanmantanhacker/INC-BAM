@@ -164,6 +164,20 @@ class LoRa:
 
         return signal_ + noise_sim
     
+    def awgn_iq_with_seed(self, signal_, SNR_, seed=None):
+        if seed is not None:
+            np.random.seed(seed)   # make noise reproducible
+
+        sig_avg_pwr = np.mean(abs(signal_)**2)
+        noise_avg_pwr = sig_avg_pwr / (10**(SNR_/10))
+
+        noise_sim = (
+            np.random.normal(0, np.sqrt(noise_avg_pwr/2), len(signal_)) +
+            1j * np.random.normal(0, np.sqrt(noise_avg_pwr/2), len(signal_))
+        )
+
+        return signal_ + noise_sim
+        
     # SNR에 따른 실제 가우시안 노이즈 추가 방식 및 SNR 계산
     def add_awgn_noise(self, signal, snr_db):
         """주어진 SNR(dB)에 맞게 AWGN 노이즈 추가"""

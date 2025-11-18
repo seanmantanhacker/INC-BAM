@@ -7,6 +7,7 @@ import pywt
 import lz4.frame
 from numpy.linalg import svd
 import torch
+from torch.autograd import Variable
 
 sample_rate = 1e6   # 1 MHz
 bw = 125e3          # LoRa Bandwidth (125 kHz)
@@ -892,10 +893,10 @@ def create_spectrogram_npy_dual(x_ds,fs_ds,snr,symbol,no,folder_r=None,folder_i=
         np.save(f'{folder_i}/s_sf9_bw125_{snr}_{symbol}_{no}.npy', Zxx_i_crop)
     return Zxx_r_crop,Zxx_i_crop,Zxx_r.min(),Zxx_r.max(),Zxx_i.min(),Zxx_i.max()
 
-def create_spectrogram_from_torch(x):
-    nperseg = 256 #128
-    noverlap = 128 # 64
-    nfft = 512 #512
+def create_spectrogram_from_torch(x,sf,snr,symbol,no,folder_r=None):
+    nperseg = 2**sf // 8 #64
+    noverlap = 2**sf // 16# 64
+    nfft = (2**sf *2)#512
     window = torch.hann_window(nperseg)
     if isinstance(x, np.ndarray):
         x = torch.from_numpy(x)
@@ -911,10 +912,21 @@ def create_spectrogram_from_torch(x):
         return_complex=True,       # this makes output shape (..., 2)
         center=True,
         onesided=False,
-        pad_mode="reflect"
+        pad_mode="constant"
     )
 
-    return Z
+    Z_torch = Z.unsqueeze(0)  # adds batch dim
+    ##crop
+    out = spec_to_network_input(Z_torch,(2**sf))
+    real_part = out[0][0]
+    ima_part = out[0][1]
+    magnitude = torch.abs(real_part + ima_part * 1j)
+    # Sxx_norm = (magnitude - magnitude.min()) / (magnitude.max() - magnitude.min())
+
+    if (folder_r is not None):
+        np.save(f'{folder_r}/s_sf9_bw125_{snr}_{symbol}_{no}.npy',magnitude)
+    return magnitude
+
 def calculate_symbol_alliqfile_without_down_sampling(data,sf,bw,sample_rate,show=True):
     plt.figure(figsize=(20,25))
     symbol_time = 2**sf / bw  # Symbol duration
@@ -1119,3 +1131,36 @@ def band_limited_noise(x, Fs, low_hz, high_hz, snr_db):
     Pn = np.mean(np.abs(colored)**2)
     scale = np.sqrt(Psig / (10**(snr_db/10) * Pn))
     return x + colored * scale
+
+def to_var(x):
+    """Converts numpy to variable."""
+    if torch.cuda.is_available():
+        x = x.cuda()
+    return Variable(x)
+
+def spec_to_network_input(x,freq):
+
+    """Converts numpy to variable."""
+    freq_size = freq
+    normalization = True
+    x_image_channel = 2
+    # trim
+    trim_size = freq_size // 2
+    # up down 拼接
+    y = torch.cat((x[:, -trim_size:, :], x[:, 0:trim_size, :]), 1)
+
+    if normalization:
+        y_abs = torch.abs(y)
+        y_abs_max = torch.tensor(
+            list(map(lambda x: torch.max(x), y_abs)))
+        y_abs_max = to_var(torch.unsqueeze(torch.unsqueeze(y_abs_max, 1), 2))
+        y = torch.div(y, y_abs_max)
+    
+    if x_image_channel == 2:
+        y = torch.view_as_real(y)  # [B,H,W,2]
+        y = torch.transpose(y, 2, 3)
+        y = torch.transpose(y, 1, 2)
+    else:
+        y = torch.angle(y)  # [B,H,W]
+        y = torch.unsqueeze(y, 1)  # [B,H,W]
+    return y  # [B,2,H,W]
