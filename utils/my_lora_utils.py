@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import resample_poly
 import torch
+from torch.autograd import Variable
 
 sample_rate = 1e6   # 1 MHz
 bw = 125e3          # LoRa Bandwidth (125 kHz)
@@ -183,6 +184,6 @@ def create_spectrogram_from_torch(x,sf,bw,fs,target_row,target_col,snr,symbol,no
     magnitude = torch.abs(real_part + ima_part * 1j)
 
     if (folder_r is not None):
-        np.save(f'{folder_r}/s_sf9_bw125_{snr}_{symbol}_{no}.npy',magnitude)
+        np.save(f'{folder_r}/s_sf{sf}_bw{bw}_{snr}_{symbol}_{no}.npy',magnitude)
     return magnitude
    
