@@ -1,16 +1,19 @@
 # INC-BAM
-Compression using BAM
+Compression using Multi stage BAM for LoRa 
 
 ## python version that i use
-3.12.10
+`3.12.10`
 
 ## Clone clean Version 1.0
+```
 git clone --branch v1.0 --depth 1 https://github.com/seanmantanhacker/INC-BAM.git
-
+```
 ## Clone experimental branch (Main)
-git clone https://github.com/seanmantanhacker/INC-BAM.git
 
-Locate in tags, and download or 
+Locate in tags, and download or clone this 
+```
+git clone https://github.com/seanmantanhacker/INC-BAM.git
+```
 ## How to use
 1. Every Model-experiment-? have generate, training, and main
 2. run generate to generate datasets
