@@ -112,6 +112,11 @@ def downsampling(data,fs,down):
     return y,fs_new
     # Resample from 4096 → 1024 using polyphase filtering
 
+def to_var(x):
+    """Converts numpy to variable."""
+    if torch.cuda.is_available():
+        x = x.cuda()
+    return Variable(x)
 
 def spec_to_network_input(x,freq):
 
