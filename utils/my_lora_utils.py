@@ -853,8 +853,8 @@ def create_spectrogram_npy(x_ds,fs_ds,snr,symbol,no,folder=None):
     return Sxx_crop,Sxx_dB.min(),Sxx_dB.max()
 
 def create_spectrogram_npy_dual(x_ds,fs_ds,snr,symbol,no,folder_r=None,folder_i=None):
-    nperseg = 256 #128
-    noverlap = 128 # 64
+    nperseg = 128 #128
+    noverlap = 64 # 64
     nfft = 512 #512
     window = "hann"
     f_new, t_new, Zxx = stft(
@@ -865,17 +865,14 @@ def create_spectrogram_npy_dual(x_ds,fs_ds,snr,symbol,no,folder_r=None,folder_i=
 
     print(Zxx.shape)
     ###### USE DB, and normalize
-    # f = np.fft.fftshift(f_new)
-    # Zxx_shift = np.fft.fftshift(Zxx, axes=0)
-    
-    f = f_new
-    Zxx_shift = Zxx
-    # Sxx_dB = 10 * np.log10(Sxx + 1e-12)
+    f = np.fft.fftshift(f_new)
+    Zxx_shift = np.fft.fftshift(Zxx, axes=0)
+    Sxx_dB = 10 * np.log10(Zxx_shift + 1e-12)
     # Normalize to 0–1 range
-    # Sxx_norm_0_to_1 = (Zxx_shift - Zxx_shift.min()) / (Zxx_shift.max() - Zxx_shift.min())
-    Zxx_r = np.real(Zxx_shift)
+    Sxx_norm_0_to_1 = (Sxx_dB - Sxx_dB.min()) / (Sxx_dB.max() - Sxx_dB.min())
+    Zxx_r = np.real(Sxx_norm_0_to_1)
     # Zxx_r = np.abs(Zxx_r)
-    Zxx_i = np.imag(Zxx_shift)
+    Zxx_i = np.imag(Sxx_norm_0_to_1)
     # Zxx_i = np.abs(Zxx_i)
     # Zxx_r_norm_0_to_1 = (Zxx_r - Zxx_r.min()) / (Zxx_r.max() - Zxx_r.min())
     # Zxx_i_norm_0_to_1 = (Zxx_i - Zxx_i.min()) / (Zxx_i.max() - Zxx_i.min())
@@ -883,11 +880,11 @@ def create_spectrogram_npy_dual(x_ds,fs_ds,snr,symbol,no,folder_r=None,folder_i=
     # Zxx_r_norm = 2 * (Zxx_r - Zxx_r.min()) / (Zxx_r.max() - Zxx_r.min()) - 1
     # Zxx_i_norm = 2 * (Zxx_i - Zxx_i.min()) / (Zxx_i.max() - Zxx_i.min()) - 1
     # ---- CROP to ±BW/2 ----
-    # mask = (f >= -bw/2) & (f < bw/2)
-    # Zxx_r_crop = Zxx_r_norm_0_to_1[mask, :]
-    # Zxx_i_crop = Zxx_i_norm_0_to_1[mask, :]
-    Zxx_r_crop = Zxx_r
-    Zxx_i_crop = Zxx_i
+    mask = (f >= -bw/2) & (f < bw/2)
+    Zxx_r_crop = Zxx_r[mask, :]
+    Zxx_i_crop = Zxx_i[mask, :]
+    Zxx_r_crop = Zxx_r_crop
+    Zxx_i_crop = Zxx_i_crop
     if (folder_r is not None) and (folder_i is not None):
         np.save(f'{folder_r}/s_sf9_bw125_{snr}_{symbol}_{no}.npy', Zxx_r_crop)
         np.save(f'{folder_i}/s_sf9_bw125_{snr}_{symbol}_{no}.npy', Zxx_i_crop)
@@ -900,15 +897,16 @@ def create_spectrogram_from_torch(x,sf,bw,fs,target_row,target_col,snr,symbol,no
     nfft = int(target_row * (fs/bw))#512
 
     print(input_signal_length)
-    if center :
+    if (center) :
         noverlap = (input_signal_length//(target_col -1))
         print(input_signal_length/(target_col -1))
         print(noverlap)
     else :
-        noverlap = 100
+        
+        noverlap = (input_signal_length + 0 - nfft ) // (target_col - 1)
+        print(noverlap)
 
-    nperseg = 2 * noverlap  #64
-    
+    nperseg = 2 * noverlap  #64 
     window = torch.hann_window(nperseg)
     if isinstance(x, np.ndarray):
         x = torch.from_numpy(x)
@@ -931,6 +929,7 @@ def create_spectrogram_from_torch(x,sf,bw,fs,target_row,target_col,snr,symbol,no
     
     Z_torch = Z.unsqueeze(0)  # adds batch dim
     ##crop
+    print("SS")
     print(Z.shape)
     out = spec_to_network_input(Z_torch,target_row)
     
