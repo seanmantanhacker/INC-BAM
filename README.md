@@ -5,12 +5,11 @@ Compression using Multi stage BAM for LoRa
 `3.12.10`
 
 ## Clone clean Version 1.0
+Locate in tags, and download or clone this 
 ```
 git clone --branch v1.0 --depth 1 https://github.com/seanmantanhacker/INC-BAM.git
 ```
 ## Clone experimental branch (Main)
-
-Locate in tags, and download or clone this 
 ```
 git clone https://github.com/seanmantanhacker/INC-BAM.git
 ```
