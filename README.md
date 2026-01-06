@@ -26,11 +26,12 @@ git clone https://github.com/seanmantanhacker/INC-BAM.git
 
 
 #### - Model 03
-
+```
 This is the same structure as BAM and Multi BAM
 support for batch training, 
 And the most importantly, add torch instead of classical numpy
 its increase the speed while maintain the performace
+```
 #### - Model 04
 ```
 NOTE Bam V4

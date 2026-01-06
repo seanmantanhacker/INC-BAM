@@ -160,7 +160,7 @@ class BAMv4:
                     raise ValueError("NaN detected in weights!")
                 
             if verbose:
-                print(f"EEpoch {epoch+1}/{num_epochs}, MSE={mse.item():.6f}")
+                print(f"Epoch {epoch+1}/{num_epochs}, MSE={mse.item():.6f}")
 
         return losses
 
