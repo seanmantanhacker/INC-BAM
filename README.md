@@ -19,3 +19,22 @@ git clone https://github.com/seanmantanhacker/INC-BAM.git
 3. run training for training model
 4. run main, for testing purpose
 
+#### - Model 01
+
+
+#### - Model 02
+
+
+#### - Model 03
+
+
+#### - Model 04
+```
+NOTE Bam V4
+This is the same structure of BAM and Multi BAM V3
+support for batch training, 
+And the most importantly, add torch instead of classical numpy
+its increase the speed while maintain the performace
+
+The main difference is how to calculate error, this model diff prediction with clean signal
+```
