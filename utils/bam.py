@@ -23,7 +23,6 @@ class BAMv3:
         return Wx  
 
     def train(self, X, num_epochs=1, batch_size=32, verbose=True):
-        # n_samples = X.shape[0]
         X = torch.tensor(X, dtype=torch.float32, device=self.device)
         n_samples = X.shape[0]
         losses = []

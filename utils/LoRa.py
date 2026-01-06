@@ -41,10 +41,7 @@ class LoRa:
             baseline = np.conj(baseline)
         baseline = numpy.matlib.repmat(baseline,1,2)
         offset = round((2**sf - code_word) / 2**sf * num_samp)
-        # print(baseline[:5])
-        # print(np.shape(baseline))
-
-#         symb = baseline[:, offset:(offset+int(num_samp))]
+        
         symb = baseline[:, (2**sf - offset):(2**sf - offset+int(num_samp))]
 
         if org_Fs != Fs:
@@ -90,13 +87,13 @@ class LoRa:
     
     def one_rows_two_cols(self, signal1, signal2, noverlap, nfft):
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12,6))
-        # 서브플롯들 사이의 간격을 조정
+        
         plt.subplots_adjust(wspace=0.3, hspace=0.3)
         fig.text(0.5, 0.04, 'Frequency index', ha='center')
         plt.suptitle('Spectrogram of two symbols')
         fig.text(0.04, 0.5, 'Frequency', rotation='vertical')
 
-        formatter = FormatStrFormatter('%.3f')  # 소수점 2자리로 제한하는 포맷 설정
+        formatter = FormatStrFormatter('%.3f')  
         ax1.xaxis.set_major_formatter(formatter)
         ax2.xaxis.set_major_formatter(formatter)
 
@@ -125,16 +122,15 @@ class LoRa:
         sig_fft = self.get_fft(signal)
 
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12,6))
-        # 서브플롯들 사이의 간격을 조정
+        
         plt.subplots_adjust(wspace=0.3, hspace=0.3)
         fig.text(0.5, 0.04, 'Frequency index', ha='center')
         fig.text(0.08, 0.45, 'Magnitude', rotation='vertical')
-        # plt.subplot(1,2,1)
+        
         ax1.set_title('Real Part')
         ax1.scatter(x, sig_fft.real, c='#1e88e5',alpha=0.7)
         ax1.plot(x, sig_fft.real, c='red', linestyle='dashed', alpha=0.5)
 
-        # plt.subplot(1,2,2)
         ax2.set_title('Imaginary Part')
         ax2.scatter(x, sig_fft.imag, c='#1e88e5',alpha=0.7)
         ax2.plot(x, sig_fft.imag, c='red', linestyle='dashed', alpha=0.5)
@@ -150,21 +146,15 @@ class LoRa:
         return signal_ + noise_sim
     
     def awgn_iq(self, signal_, SNR_):
-        sig_avg_pwr = np.mean(abs(signal_)**2)      # 신호의 평균 파워
-        noise_avg_pwr = sig_avg_pwr / (10**(SNR_/10))   # SNR을 고려한 노이즈 파워 계산
-
-        # if np.isrealobj(signal_):
-        #     # 평균 : 0, 표준편차 : np.sqrt(noise_avg_pwr), 데이터 수: len(signal_)
-        #     noise_sim = np.random.normal(0, np.sqrt(noise_avg_pwr), len(signal_))
-
-        # else:
+        sig_avg_pwr = np.mean(abs(signal_)**2)    
+        noise_avg_pwr = sig_avg_pwr / (10**(SNR_/10))   
         noise_sim = (np.random.normal(0, np.sqrt(noise_avg_pwr/2), len(signal_)) + 1j*np.random.normal(0, np.sqrt(noise_avg_pwr/2), len(signal_)))
 
         return signal_ + noise_sim
     
     def awgn_iq_with_seed(self, signal_, SNR_, seed=None):
         if seed is not None:
-            np.random.seed(seed)   # make noise reproducible
+            np.random.seed(seed)  # make noise reproducible
 
         sig_avg_pwr = np.mean(abs(signal_)**2)
         noise_avg_pwr = sig_avg_pwr / (10**(SNR_/10))
@@ -176,7 +166,6 @@ class LoRa:
 
         return signal_ + noise_sim
         
-    # SNR에 따른 실제 가우시안 노이즈 추가 방식 및 SNR 계산
     def add_awgn_noise(self, signal, snr_db):
         """주어진 SNR(dB)에 맞게 AWGN 노이즈 추가"""
         signal_power = np.mean(np.abs(signal)**2)
@@ -225,7 +214,6 @@ class LoRa:
             chirp_ = lora_init.gen_symbol(val,down=False)
             chirp = signal.resample_poly(chirp_,up=8,down=1)
             gen_snr = target_snr
-            # chirp_awgn = lora_init.add_awgn_noise(chirp, gen_snr)
             chirp_awgn = lora_init.awgn_iq(chirp, gen_snr)
             chirp_signal = chirp_awgn.reshape(1,-1)
             mat_data = {
@@ -252,7 +240,7 @@ class LoRa:
     def gen_symbol_fs(self, code_word, sf, bw, down=False, Fs=None):
         sf = self.sf
         bw = self.bw
-        # Fs = bw
+        
         # the default sampling frequency is 1e6
         if Fs is None or Fs < 0:
             Fs = 1000000
@@ -265,14 +253,12 @@ class LoRa:
             Fs = bw
         
         t = np.arange(0, 2**sf/bw, 1/Fs)
-        # print('len t : ', len(t))
+        
         num_samp = Fs * 2**sf/bw
 
         f0 = -bw/2
         f1 = bw/2
 
-        # chirpI = chirp(t, f0, 2**sf/bw, f1, 'linear', 90)
-        # chirpQ = chirp(t, f0, 2**sf/bw, f1, 'linear', 0)
         chirpI = chirp(t, f0, 2**sf/bw, f1, 'linear', 0)
         chirpQ = chirp(t, f0, 2**sf/bw, f1, 'linear', -90)
         baseline = chirpI + 1j * chirpQ

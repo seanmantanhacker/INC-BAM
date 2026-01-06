@@ -4,10 +4,10 @@ Compression using Multi stage BAM for LoRa
 ## python version that i use
 `3.12.10`
 
-## Clone clean Version 1.1.1
+## Clone clean Version 1.1.2
 Locate in tags, and download or clone this 
 ```
-git clone --branch v1.1.1 --depth 1 https://github.com/seanmantanhacker/INC-BAM.git
+git clone --branch v1.1.2 --depth 1 https://github.com/seanmantanhacker/INC-BAM.git
 ```
 ## Clone experimental branch (Main)
 ```
@@ -18,12 +18,6 @@ git clone https://github.com/seanmantanhacker/INC-BAM.git
 2. run generate to generate datasets
 3. run training for training model
 4. run main, for testing purpose
-
-#### - Model 01
-
-
-#### - Model 02
-
 
 #### - Model 03
 ```
