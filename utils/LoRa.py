@@ -588,52 +588,44 @@ class BAMv4:
 
     def train(self, X,Y,database, num_epochs=1, batch_size=32, verbose=True,type=1):
         
-        X = torch.tensor(X, dtype=torch.float32, device=self.device)
+        X = torch.as_tensor(X, dtype=torch.float32, device=self.device)
        
         if (type == 2):
-            database = torch.tensor(database, dtype=torch.float32, device=self.device)
+            Y = torch.as_tensor(Y, dtype=torch.long, device=self.device)
+            database = torch.as_tensor(database, dtype=torch.float32, device=self.device)
         n_samples = X.shape[0]
         losses = []
 
         for epoch in range(num_epochs):
             perm = torch.randperm(n_samples, device=self.device)
-            X = X[perm]
-            if (type == 2):
-                Y = Y[perm]
+            Xp = X[perm]
+            Yp = Y[perm] if type == 2 else None
 
             for i in range(0, n_samples, batch_size):
-                batch = X[i:i+batch_size]
-                if (type == 2):
-                    symb_clean_batch = Y[i:i+batch_size]
-                batch_errors = []
+                Xb = Xp[i:i + batch_size]
+                B = Xb.shape[0]
 
-                for k, x in enumerate(batch):
-                    x = x.view(1, -1)
-                    if (type == 2):
-                        clean_sym = symb_clean_batch[k]       
-                        clean_signal = database[clean_sym]  
-                        clean_signal = clean_signal.view(1,-1)
-                        
-                    y = self._output_function(self.W @ x.T)
-                    x_reconstructed = self._output_function(self.W.T @ y)
+                Xb_T = Xb.T                             
+                Yb = self.W @ Xb_T                
+                X_hat = self.W.T @ Yb 
+                 # -------- Target --------
+                if type == 2:
+                    clean_sym = Yp[i:i + B]
+                    X_target = database[clean_sym].T   
+                else:
+                    X_target = Xb_T                  
 
-                    if (type == 2):
-                        error = clean_signal - x_reconstructed.T
-                    else :
-                        error = x - x_reconstructed.T 
-                    batch_errors.append(torch.mean(error ** 2).item())
+                error = X_target - X_hat       
+                mse = torch.mean(error ** 2)
+                losses.append(mse.item())
+                # -------- BAM Update (batch) --------
+                self.W += self.eta * (Yb @ error.T)
 
-                    self.W += self.eta * (y @ error)
-
-                    if torch.isnan(self.W).any():
-                        raise ValueError("NaN detected in weights!")
-
-                # average error for this batch
-                batch_mse = sum(batch_errors) / len(batch_errors)
-                losses.append(batch_mse)
-
-                if verbose and i % (batch_size * 10) == 0:
-                    print(f"Epoch {epoch+1}, Batch {i//batch_size+1}, MSE = {batch_mse:.6f}")
+                if torch.isnan(self.W).any():
+                    raise ValueError("NaN detected in weights!")
+                
+            if verbose:
+                print(f"EEpoch {epoch+1}/{num_epochs}, MSE={mse.item():.6f}")
 
         return losses
 
