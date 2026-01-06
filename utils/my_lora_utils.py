@@ -506,9 +506,13 @@ def check_simmilarity(data1,data2): #data 2 suppose to original or desired
     data1 = data1[:min_len]
     data2 = data2[:min_len]
 
+    if isinstance(data1, torch.Tensor):
+        data1 = data1.detach().cpu().numpy()
+    if isinstance(data2, torch.Tensor):
+        data2 = data2.detach().cpu().numpy()
+
     # Compute magnitude of errors
     errors = np.abs(data2 - data1)
-    magnitudes = np.abs(data2)
 
     # Compute MSPE
     mspe = np.mean((errors) ** 2)
@@ -896,25 +900,21 @@ def create_spectrogram_from_torch(x,sf,bw,fs,target_row,target_col,snr,symbol,no
     
     nfft = int(target_row * (fs/bw))#512
 
-    print(input_signal_length)
     if (center) :
         noverlap = (input_signal_length//(target_col -1))
-        print(input_signal_length/(target_col -1))
-        print(noverlap)
-    else :
         
+    else :
         noverlap = (input_signal_length + 0 - nfft ) // (target_col - 1)
-        print(noverlap)
-
+        
     nperseg = 2 * noverlap  #64 
     window = torch.hann_window(nperseg)
     if isinstance(x, np.ndarray):
         x = torch.from_numpy(x)
 
     # Ensure dtype is float32
-    print(nfft)
-    print(nperseg)
-    print(noverlap)
+    # print(nfft)
+    # print(noverlap)
+    # print(nperseg)
     Z = torch.stft(
         x, 
         n_fft=nfft,
@@ -929,17 +929,15 @@ def create_spectrogram_from_torch(x,sf,bw,fs,target_row,target_col,snr,symbol,no
     
     Z_torch = Z.unsqueeze(0)  # adds batch dim
     ##crop
-    print("SS")
-    print(Z.shape)
+
     out = spec_to_network_input(Z_torch,target_row)
-    
     real_part = out[0][0]
     ima_part = out[0][1]
     magnitude = torch.abs(real_part + ima_part * 1j)
     # Sxx_norm = (magnitude - magnitude.min()) / (magnitude.max() - magnitude.min())
 
     if (folder_r is not None):
-        np.save(f'{folder_r}/s_sf9_bw125_{snr}_{symbol}_{no}.npy',magnitude)
+        np.save(f'{folder_r}/s_sf{sf}_bw125_{snr}_{symbol}_{no}.npy',magnitude)
     return magnitude
    
 
@@ -1180,3 +1178,11 @@ def spec_to_network_input(x,freq):
         y = torch.angle(y)  # [B,H,W]
         y = torch.unsqueeze(y, 1)  # [B,H,W]
     return y  # [B,2,H,W]
+
+import os
+def check_and_make_folder(folder_path):
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+        print(f"Folder created: {folder_path}")
+    else:
+        print(f"Folder already exists: {folder_path}")
