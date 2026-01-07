@@ -118,6 +118,7 @@ class BAMv4:
         torch.nn.init.uniform_(self.W, -0.01, 0.01)
 
     def _output_function(self, Wx):
+        # return torch.tanh(Wx)
         return Wx  
 
     def train(self, X,Y,database, num_epochs=1, batch_size=32, verbose=True,type=1):
@@ -135,6 +136,8 @@ class BAMv4:
             Xp = X[perm]
             Yp = Y[perm] if type == 2 else None
 
+            epoch_mse = 0.0
+            num_batches = 0
             for i in range(0, n_samples, batch_size):
                 Xb = Xp[i:i + batch_size]
                 B = Xb.shape[0]
@@ -151,6 +154,8 @@ class BAMv4:
 
                 error = X_target - X_hat       
                 mse = torch.mean(error ** 2)
+                epoch_mse += mse.item()
+                num_batches += 1
                 losses.append(mse.item())
                 # -------- BAM Update (batch) --------
                 self.W += self.eta * (Yb @ error.T)
@@ -159,7 +164,9 @@ class BAMv4:
                     raise ValueError("NaN detected in weights!")
                 
             if verbose:
-                print(f"Epoch {epoch+1}/{num_epochs}, MSE={mse.item():.6f}")
+                epoch_mse /= num_batches
+                print(f"Epoch {epoch+1}/{num_epochs}, MSE={epoch_mse:.6f}")
+                # print(f"Epoch {epoch+1}/{num_epochs}, MSE={mse.item():.6f}")
 
         return losses
 
