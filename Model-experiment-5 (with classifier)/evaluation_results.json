@@ -1,0 +1,162 @@
+{
+    "10": {
+        "correct": 348,
+        "false": 420
+    },
+    "9": {
+        "correct": 340,
+        "false": 428
+    },
+    "8": {
+        "correct": 344,
+        "false": 424
+    },
+    "7": {
+        "correct": 378,
+        "false": 390
+    },
+    "6": {
+        "correct": 343,
+        "false": 425
+    },
+    "5": {
+        "correct": 351,
+        "false": 417
+    },
+    "4": {
+        "correct": 356,
+        "false": 412
+    },
+    "3": {
+        "correct": 357,
+        "false": 411
+    },
+    "2": {
+        "correct": 363,
+        "false": 405
+    },
+    "1": {
+        "correct": 381,
+        "false": 387
+    },
+    "0": {
+        "correct": 342,
+        "false": 426
+    },
+    "-1": {
+        "correct": 355,
+        "false": 413
+    },
+    "-2": {
+        "correct": 340,
+        "false": 428
+    },
+    "-3": {
+        "correct": 336,
+        "false": 432
+    },
+    "-4": {
+        "correct": 363,
+        "false": 405
+    },
+    "-5": {
+        "correct": 351,
+        "false": 417
+    },
+    "-6": {
+        "correct": 335,
+        "false": 433
+    },
+    "-7": {
+        "correct": 316,
+        "false": 452
+    },
+    "-8": {
+        "correct": 323,
+        "false": 445
+    },
+    "-9": {
+        "correct": 289,
+        "false": 479
+    },
+    "-10": {
+        "correct": 284,
+        "false": 484
+    },
+    "-11": {
+        "correct": 300,
+        "false": 468
+    },
+    "-12": {
+        "correct": 288,
+        "false": 480
+    },
+    "-13": {
+        "correct": 241,
+        "false": 527
+    },
+    "-14": {
+        "correct": 227,
+        "false": 541
+    },
+    "-15": {
+        "correct": 195,
+        "false": 573
+    },
+    "-16": {
+        "correct": 182,
+        "false": 586
+    },
+    "-17": {
+        "correct": 157,
+        "false": 611
+    },
+    "-18": {
+        "correct": 145,
+        "false": 623
+    },
+    "-19": {
+        "correct": 113,
+        "false": 655
+    },
+    "-20": {
+        "correct": 108,
+        "false": 660
+    },
+    "-21": {
+        "correct": 77,
+        "false": 691
+    },
+    "-22": {
+        "correct": 71,
+        "false": 697
+    },
+    "-23": {
+        "correct": 56,
+        "false": 712
+    },
+    "-24": {
+        "correct": 34,
+        "false": 734
+    },
+    "-25": {
+        "correct": 30,
+        "false": 738
+    },
+    "-26": {
+        "correct": 15,
+        "false": 753
+    },
+    "-27": {
+        "correct": 11,
+        "false": 757
+    },
+    "-28": {
+        "correct": 11,
+        "false": 757
+    },
+    "-29": {
+        "correct": 3,
+        "false": 765
+    }
+}

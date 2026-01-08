@@ -212,3 +212,36 @@ class MultiBAMv4:
         for bam in reversed(self.bams):
             X = bam.decompress(X)
         return X       
+
+from torch.utils.data import Dataset
+import torch.nn as nn
+
+class SymbolDataset(Dataset):
+    def __init__(self, X, y):
+        self.X = torch.tensor(X, dtype=torch.float32)
+        self.y = torch.tensor(y, dtype=torch.long)
+
+        # Normalize (VERY IMPORTANT)
+        self.X = self.X / (torch.norm(self.X, dim=1, keepdim=True) + 1e-8)
+
+    def __len__(self):
+        return len(self.y)
+
+    def __getitem__(self, idx):
+        return self.X[idx], self.y[idx]
+    
+class SymbolClassifier(nn.Module):
+    def __init__(self,layers_dims, activation=nn.ReLU):
+        super().__init__()
+        layers = []
+        for i in range(len(layers_dims) - 1):
+            layers.append(nn.Linear(layers_dims[i], layers_dims[i+1]))
+
+            # Do NOT add activation after final layer (logits)
+            if i < len(layers_dims) - 2:
+                layers.append(activation())
+
+        self.net = nn.Sequential(*layers)
+
+    def forward(self, x):
+        return self.net(x)  # logits
