@@ -1,122 +1,102 @@
 {
-    "50": {
-        "correct": 131,
-        "false": 169
+    "5": {
+        "correct": 345,
+        "false": 155
     },
-    "49": {
-        "correct": 139,
-        "false": 161
+    "4": {
+        "correct": 322,
+        "false": 178
     },
-    "48": {
-        "correct": 121,
-        "false": 179
+    "3": {
+        "correct": 335,
+        "false": 165
     },
-    "47": {
-        "correct": 129,
-        "false": 171
-    },
-    "46": {
-        "correct": 141,
+    "2": {
+        "correct": 341,
         "false": 159
     },
-    "45": {
-        "correct": 137,
-        "false": 163
-    },
-    "44": {
-        "correct": 129,
-        "false": 171
-    },
-    "43": {
-        "correct": 116,
+    "1": {
+        "correct": 316,
         "false": 184
     },
-    "42": {
-        "correct": 130,
-        "false": 170
+    "0": {
+        "correct": 347,
+        "false": 153
     },
-    "41": {
-        "correct": 142,
-        "false": 158
+    "-1": {
+        "correct": 335,
+        "false": 165
     },
-    "40": {
-        "correct": 125,
-        "false": 175
+    "-2": {
+        "correct": 312,
+        "false": 188
     },
-    "39": {
-        "correct": 143,
-        "false": 157
+    "-3": {
+        "correct": 318,
+        "false": 182
     },
-    "38": {
-        "correct": 128,
-        "false": 172
+    "-4": {
+        "correct": 294,
+        "false": 206
     },
-    "37": {
-        "correct": 117,
-        "false": 183
+    "-5": {
+        "correct": 304,
+        "false": 196
     },
-    "36": {
-        "correct": 129,
-        "false": 171
+    "-6": {
+        "correct": 296,
+        "false": 204
     },
-    "35": {
-        "correct": 119,
-        "false": 181
+    "-7": {
+        "correct": 270,
+        "false": 230
     },
-    "34": {
-        "correct": 128,
-        "false": 172
+    "-8": {
+        "correct": 261,
+        "false": 239
     },
-    "33": {
-        "correct": 128,
-        "false": 172
+    "-9": {
+        "correct": 238,
+        "false": 262
     },
-    "32": {
-        "correct": 134,
-        "false": 166
+    "-10": {
+        "correct": 202,
+        "false": 298
     },
-    "31": {
-        "correct": 125,
-        "false": 175
+    "-11": {
+        "correct": 197,
+        "false": 303
     },
-    "30": {
-        "correct": 141,
-        "false": 159
+    "-12": {
+        "correct": 183,
+        "false": 317
     },
-    "29": {
-        "correct": 126,
-        "false": 174
+    "-13": {
+        "correct": 149,
+        "false": 351
     },
-    "28": {
-        "correct": 144,
-        "false": 156
+    "-14": {
+        "correct": 155,
+        "false": 345
     },
-    "27": {
-        "correct": 131,
-        "false": 169
+    "-15": {
+        "correct": 118,
+        "false": 382
     },
-    "26": {
-        "correct": 106,
-        "false": 194
+    "-16": {
+        "correct": 92,
+        "false": 408
     },
-    "25": {
-        "correct": 119,
-        "false": 181
+    "-17": {
+        "correct": 87,
+        "false": 413
     },
-    "24": {
-        "correct": 127,
-        "false": 173
+    "-18": {
+        "correct": 76,
+        "false": 424
     },
-    "23": {
-        "correct": 142,
-        "false": 158
-    },
-    "22": {
-        "correct": 115,
-        "false": 185
-    },
-    "21": {
-        "correct": 113,
-        "false": 187
+    "-19": {
+        "correct": 59,
+        "false": 441
     }
 }
