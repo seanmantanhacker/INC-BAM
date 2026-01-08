@@ -220,7 +220,6 @@ class SymbolDataset(Dataset):
     def __init__(self, X, y):
         self.X = torch.tensor(X, dtype=torch.float32)
         self.y = torch.tensor(y, dtype=torch.long)
-
         # Normalize (VERY IMPORTANT)
         self.X = self.X / (torch.norm(self.X, dim=1, keepdim=True) + 1e-8)
 
@@ -231,7 +230,7 @@ class SymbolDataset(Dataset):
         return self.X[idx], self.y[idx]
     
 class SymbolClassifier(nn.Module):
-    def __init__(self,layers_dims, activation=nn.ReLU):
+    def __init__(self,layers_dims, activation=nn.LeakyReLU):
         super().__init__()
         layers = []
         for i in range(len(layers_dims) - 1):
@@ -239,7 +238,7 @@ class SymbolClassifier(nn.Module):
 
             # Do NOT add activation after final layer (logits)
             if i < len(layers_dims) - 2:
-                layers.append(activation())
+                layers.append(activation(0.01))
 
         self.net = nn.Sequential(*layers)
 
