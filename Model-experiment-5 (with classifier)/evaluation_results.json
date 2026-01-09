@@ -1,102 +1,102 @@
 {
     "5": {
-        "correct": 345,
-        "false": 155
+        "correct": 477,
+        "false": 23
     },
     "4": {
-        "correct": 322,
-        "false": 178
+        "correct": 474,
+        "false": 26
     },
     "3": {
-        "correct": 335,
-        "false": 165
+        "correct": 466,
+        "false": 34
     },
     "2": {
-        "correct": 341,
-        "false": 159
+        "correct": 476,
+        "false": 24
     },
     "1": {
+        "correct": 463,
+        "false": 37
+    },
+    "0": {
+        "correct": 472,
+        "false": 28
+    },
+    "-1": {
+        "correct": 461,
+        "false": 39
+    },
+    "-2": {
+        "correct": 448,
+        "false": 52
+    },
+    "-3": {
+        "correct": 433,
+        "false": 67
+    },
+    "-4": {
+        "correct": 441,
+        "false": 59
+    },
+    "-5": {
+        "correct": 426,
+        "false": 74
+    },
+    "-6": {
+        "correct": 399,
+        "false": 101
+    },
+    "-7": {
+        "correct": 361,
+        "false": 139
+    },
+    "-8": {
+        "correct": 363,
+        "false": 137
+    },
+    "-9": {
         "correct": 316,
         "false": 184
     },
-    "0": {
-        "correct": 347,
-        "false": 153
-    },
-    "-1": {
-        "correct": 335,
-        "false": 165
-    },
-    "-2": {
-        "correct": 312,
-        "false": 188
-    },
-    "-3": {
-        "correct": 318,
-        "false": 182
-    },
-    "-4": {
-        "correct": 294,
-        "false": 206
-    },
-    "-5": {
-        "correct": 304,
-        "false": 196
-    },
-    "-6": {
-        "correct": 296,
-        "false": 204
-    },
-    "-7": {
-        "correct": 270,
-        "false": 230
-    },
-    "-8": {
-        "correct": 261,
-        "false": 239
-    },
-    "-9": {
-        "correct": 238,
-        "false": 262
-    },
     "-10": {
-        "correct": 202,
-        "false": 298
+        "correct": 303,
+        "false": 197
     },
     "-11": {
-        "correct": 197,
-        "false": 303
+        "correct": 263,
+        "false": 237
     },
     "-12": {
-        "correct": 183,
-        "false": 317
+        "correct": 229,
+        "false": 271
     },
     "-13": {
-        "correct": 149,
-        "false": 351
+        "correct": 203,
+        "false": 297
     },
     "-14": {
-        "correct": 155,
-        "false": 345
+        "correct": 198,
+        "false": 302
     },
     "-15": {
-        "correct": 118,
-        "false": 382
+        "correct": 144,
+        "false": 356
     },
     "-16": {
-        "correct": 92,
-        "false": 408
+        "correct": 111,
+        "false": 389
     },
     "-17": {
+        "correct": 110,
+        "false": 390
+    },
+    "-18": {
         "correct": 87,
         "false": 413
     },
-    "-18": {
-        "correct": 76,
-        "false": 424
-    },
     "-19": {
-        "correct": 59,
-        "false": 441
+        "correct": 69,
+        "false": 431
     }
 }
